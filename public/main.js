@@ -8,11 +8,11 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
-/*
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+const geometry = new THREE.BoxGeometry( 1,1,1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );*/
-//scene.add( cube );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
 
 camera.position.z = 5;
 
@@ -55,6 +55,7 @@ const light = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add( light );
 var tamanio=20;
 //var geometry = THREE.CubeGeometry( 5, 5, 5 );
+/*
 const geometry = new THREE.BoxGeometry( 2, 2, 2 );
 var material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true, wireframeLinewidth:10});
 
@@ -62,17 +63,26 @@ var mesh = new THREE.Mesh( geometry, material );
 mesh.position.x=0;
 mesh.position.y=0;
 mesh.position.z=0;
-scene.add( mesh );
+scene.add( mesh );*/
 
 
 // Crear el Raycaster y el vector del mouse
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+let selectedObject = null;
 
 // Función para actualizar la posición del mouse
 function onMouseMove(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+	/*
+	if ( selectedObject ) {
+
+		selectedObject.material.color.set( '#69f' );
+		selectedObject = null;
+
+	}*/
 	//console.log("hola");
 	
 	raycaster.setFromCamera(mouse, camera);
@@ -80,8 +90,23 @@ function onMouseMove(event) {
 	console.log(intersects)
 	if (intersects.length > 0) {
 		const color = new THREE.Color(0xff0000); // Color rojo
-		console.log(intersects[0].object.material.color.set(color))
-		console.log(intersects[0].face.color)
+		//console.log(intersects[0].object.material.color.set(color))
+		console.log(intersects[0].face)
+		/*
+		const res = intersects.filter( function ( res ) {
+
+			return res && res.object;
+
+		} )[ 0 ];
+
+		if ( res && res.object ) {
+
+			selectedObject = res.object;
+			selectedObject.material.color.set( '#f00' );
+
+		}*/
+
+
 		/*
 		intersects[0].face.color.set(Math.random() * 0xffffff);
 		intersects[0].object.geometry.colorsNeedUpdate = true;*/

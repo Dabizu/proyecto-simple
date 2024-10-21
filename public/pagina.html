@@ -10,7 +10,10 @@
     </style>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script src="https://rawcdn.githack.com/mrdoob/three.js/r117/build/three.min.js"></script>
+    <script src="https://rawcdn.githack.com/mrdoob/three.js/r117/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://rawcdn.githack.com/mrdoob/three.js/r117/examples/js/controls/OrbitControls.js"></script>
     <script>
         // Crear la escena
         const scene = new THREE.Scene();
@@ -44,7 +47,10 @@
 
             if (intersects.length > 0) {
                 // Cambiar el color de la cara intersectada
-                intersects[0].face.color.set(Math.random() * 0xffffff);
+                var valor=Math.random();
+                valor=0.8404641299530828;
+                console.log(valor)
+                intersects[0].face.color.set(valor * 0xffffff);
                 intersects[0].object.geometry.colorsNeedUpdate = true;
             }
         }
@@ -52,6 +58,7 @@
         window.addEventListener('click', onMouseClick, false);
 
         function animate() {
+            cube.rotation.x+=0.01;
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
         }
