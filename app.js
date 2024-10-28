@@ -7,5 +7,5 @@ app.get("/",(req,res)=>{
 });
 
 app.get("/pagina",(req,res)=>{
-    res.sendFile(__dirname+"/public/pagina.html")
+    res.sendFile(__dirname+"/public/pagina2.html")
 })

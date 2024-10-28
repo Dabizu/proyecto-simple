@@ -14,22 +14,83 @@
     <script src="https://rawcdn.githack.com/mrdoob/three.js/r117/build/three.min.js"></script>
     <script src="https://rawcdn.githack.com/mrdoob/three.js/r117/examples/js/loaders/STLLoader.js"></script>
     <script src="https://rawcdn.githack.com/mrdoob/three.js/r117/examples/js/controls/OrbitControls.js"></script>
-    <script>
+    
+    <script type="module">
+        import * as Three from './three.module.js';
+        import {GLTFLoader} from './GLTFLoader.js';
+        import {OrbitControls} from './OrbitControls.js';
+
         // Crear la escena
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
-
+/*
         // Crear un cubo
         const geometry = new THREE.BoxGeometry();
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, vertexColors: true });
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
+*/
 
-        camera.position.z = 5;
+        // Crear la geometría y el material con colores de vértices
+        /*const geometry = new THREE.BoxGeometry(1,1,1);
+        const material = new THREE.MeshBasicMaterial({color:0x00ff00, vertexColors: true });
+        const mesh = new THREE.Mesh(geometry, material);*/
+        
 
+        const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+        var material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true, wireframeLinewidth:10});
+        var mesh = new THREE.Mesh( geometry, material );
+        scene.add(mesh);
+        var models=[];
+        const loader = new GLTFLoader();
+        loader.load(
+            // resource URL
+            'cubo_verde.gltf',
+            // called when the resource is loaded
+            function ( gltf ) {
+                models.push(gltf)
+                //scene.add( gltf.scene );
+                //gltf.scene.scale.set(10,10,10);
+
+                gltf.animations; // Array<THREE.AnimationClip>
+                gltf.scene; // THREE.Group
+                gltf.scenes; // Array<THREE.Group>
+                gltf.cameras; // Array<THREE.Camera>
+                gltf.asset; // Object
+
+            },
+            // called while loading is progressing
+            function ( xhr ) {
+
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+            },
+            // called when loading has errors
+            function ( error ) {
+
+                console.log( 'An error happened' );
+
+            }
+            
+        );
+        //console.log(loader.scene);
+        
+        setTimeout(() => {
+            scene.add(models[0].scene);
+            var clonModelo=models[0].scene.clone();
+            console.log(clonModelo.children[0].geometry);
+        }, 2000);
+        
+        const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+        scene.add( light );
+
+        camera.position.z = 40;
+
+        const controls = new OrbitControls( camera, renderer.domElement );
+        controls.update()
         // Raycaster
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -43,14 +104,18 @@
             raycaster.setFromCamera(mouse, camera);
 
             // Calcular intersecciones
-            const intersects = raycaster.intersectObject(cube);
+            const intersects = raycaster.intersectObject(models[0].scene,true);
 
             if (intersects.length > 0) {
                 // Cambiar el color de la cara intersectada
                 var valor=Math.random();
                 valor=0.8404641299530828;
                 console.log(valor)
-                intersects[0].face.color.set(valor * 0xffffff);
+                
+                //console.log(intersects[0].face.color.set(valor*0xffffff))
+                //intersects[0].face.materialIndex=valor*0xffffff;
+                //.color.set(valor * 0xffffff);
+                //intersects[0].face.color.set(valor * 0xffffff);
                 intersects[0].object.geometry.colorsNeedUpdate = true;
             }
         }
@@ -58,7 +123,7 @@
         window.addEventListener('click', onMouseClick, false);
 
         function animate() {
-            cube.rotation.x+=0.01;
+            //cube.rotation.x+=0.01;
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
         }
